@@ -124,7 +124,7 @@ function getRawIncome() {  // returns income per second BEFORE political power
 function getIncome() {  // returns income per second
     var r = getRawIncome()
     // subtract money invested in political power
-    r *= (100 - gameData.politicalPower.slider)
+    r *= (1 - gameData.politicalPower.slider/100)
     return r
 }
 
