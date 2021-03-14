@@ -24,6 +24,11 @@ var initialGameData = {
         sp003: false,
         sp004: false,
         sp005: false
+    },
+    politicalPower: {
+        amount: 0,
+        slider: 0,
+        cost: 1000
     }
 }
 
@@ -36,6 +41,7 @@ var gameData = initialGameData
 function reset() {
     gameData = initialGameData
     updateEverything()
+    saveGame()
 }
 
 function showMeTheMoney(amt=1e11) {
@@ -86,6 +92,7 @@ function update(id, content) {
 
 function updateEverything() {  // call on load
     updateMoney()
+    updatePP()
     updateIncome()
     updatePerClickUpgrade()
     updatehandPrintButton()
@@ -99,10 +106,25 @@ function updateMoney() {
     update("currentMoney", "Current Money: $" + format(gameData.money, "money"))
 }
 
-function getIncome() {  // returns income per second
+function updatePP() {
+    document.getElementById("ppView").style.display = "none"
+    if (gameData.specialProjects.sp002) {
+        document.getElementById("ppView").style.display = "inline-block"
+    }
+    update('ppView', "Political Power: " + format(gameData.politicalPower.amount, "number") + " (" + format(getPPIncome() * 60, "number") + "/min)")
+}
+
+function getRawIncome() {  // returns income per second BEFORE political power
     var r = 0
     r += (gameData.intern.qty * gameData.intern.output)
     r += (gameData.printer.qty * gameData.printer.output)
+    return r
+}
+
+function getIncome() {  // returns income per second
+    var r = getRawIncome()
+    // subtract money invested in political power
+    r *= (100 - gameData.politicalPower.slider)
     return r
 }
 
@@ -231,11 +253,29 @@ function specialProject002() {
         gameData.specialProjects.sp002 = true
         viewSpecialProjects()
         updateMoney()
+        updatePP()
         updateMenuButtons()
     }
 }
 
+//
+// Political Power
+//
 
+var ppSlider = document.getElementById("politicalSlider");
+
+// Update the current slider value (each time you drag the slider handle)
+ppSlider.oninput = function() {
+    gameData.politicalPower.slider = this.value
+    updateIncome()
+}
+
+function getPPIncome() {  // returns PP gained per second
+    var r = getRawIncome()
+    r *= (gameData.politicalPower.slider / 100)
+    r /= gameData.politicalPower.cost
+    return r
+}
 
 //
 // Assets
@@ -318,13 +358,18 @@ function buyPrinterUpgrade() {
 var savegame = JSON.parse(localStorage.getItem("moneyPrinterSave"))
 if (savegame !== null) {  // if a save exists
     gameData = savegame
+    ppSlider.value = gameData.politicalPower.slider  // visually update slider
     updateEverything()
 }
 
 // Save gameData to local storage
 var saveGameLoop = window.setInterval(function() {
-    localStorage.setItem("moneyPrinterSave", JSON.stringify(gameData))
+    saveGame()
 }, 10000)  // every 10 seconds
+
+function saveGame() {
+    localStorage.setItem("moneyPrinterSave", JSON.stringify(gameData))
+}
 
 
 //
@@ -337,7 +382,9 @@ var mainGameLoop = window.setInterval(function() {
     gameData.lastTick = Date.now() // Don't forget to update lastTick.
     gameData.money += getIncome() * seconds
     gameData.totalPrinted += getIncome() * seconds
+    gameData.politicalPower.amount += getPPIncome() * seconds
     viewSpecialProjects()
     updateMoney()
+    updatePP()
 }, 100)
 
