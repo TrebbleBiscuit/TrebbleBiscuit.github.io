@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<!-- Money Printer
+A game where you play as the chairman of the Federal Reserve
+and your job is to personally print as much money as possible
+
+STAGES OF THE GAME:
+        Stage I
+- Hand-print money
+- Buy money printers and other such devices with money
+    - Interns hand-print money for you
+    - Printers obviously print money, have their own upgrades
+        Stage II
+- Conduct open market operations with printed money 
+- Debt monitization
+- QE
+        Stage III
+- Rewrite the mandate: Low employment, stable prices, strong asset markets
+- Fed can directly purchase securities from the market
+
+HEADLINE: Republocrats denounce Fed's $15 trillion asset purchase plan as "a paltry sum"
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Money Printer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class='header' id="currentAssets">
+        <h2>Chairman of the Fed Simulator</h2>
+        <p class='current-money' id='currentMoney' >Current Money: $0</p>
+        <p id='currentIncome'>Income: $0/minute</p>
+        <p id='internQty'>Interns: 0</p>
+        <p id='printerQty'>Printers: 0</p>
+    </div>
+    <div class = 'menu' id="navigationButtons">
+        <button onclick="tab('productionMenu')">Show Production</button>
+        <button onclick="tab('specialProjectsMenu')">Show Special Projects</button>
+        <div id='politicalEffortsMenuButton'>
+            <button onclick="tab('politicalEffortsMenu')">Show Political Efforts</button>
+        </div>
+    </div>
+    <br>
+    <div class='main'>
+        <div id='productionMenu'>
+            <div class='main-row'>
+                <button onclick="brr()", id='handPrintButton'>Hand-Print $1</button>
+                <button onclick="buyMoneyPerClickUpgrade()", id='perClickUpgrade'>Upgrade - Cost: $10</button>
+            </div>
+            <div class='main-row'>
+                <button onclick="buyInterns()", id='hireInternButton'>Hire Intern (costs $7.25)</button>
+                <button onclick="buyInternUpgrade()", id='internUpgrade'>Upgrade - Cost: $10</button>
+            </div>
+            <div class='main-row'>
+                <button onclick="buyPrinters()", id='buyPrinterButton'>Buy Printer (costs $80)</button>
+                <button onclick="buyPrinterUpgrade()", id='printerUpgrade'>Upgrade - Cost: $2000</button>
+            </div>
+        </div>
+        <div id='specialProjectsMenu'>
+            <div id='specProj001'>
+                <h4>Special Project 1</h4>
+                <p>Instead of paying the graduate interns that do most of the work around here a living wage, we'll pay them in "valuable work experience".</p>
+                <p>Intern cost reduced by 80%, Upgrades cost reduced by 50%<p>
+                <button type="button", onclick=specialProject001()>Initiate Special Project (Cost: $2,000)</button>
+            </div>
+            <button disabled id='specProj001Finished'>Special Project 1 Finished</button>
+            <div id='specProj002'>
+                <h4>Special Project 2</h4>
+                <p>The Federal Reserve has seen its powers expanded many times since its inception. We need only give the political process a nudge in the right direction.</p>
+                <p>Unlocks political power<p>
+                <button type="button", onclick=specialProject002()>Initiate Special Project 2 (Cost: $15,000)</button>
+            </div>
+            <button disabled id='specProj002Finished'>Special Project 2 Finished</button>
+        </div>
+        <div id='politicalEffortsMenu'>
+            <p>Allocate income to bribe politicians</p>
+            <input type="range" min="0" max="100" value="0" id="politicalSlider">
+            <p>not implemented yet lmao</p>
+        </div>
+    </div>
+    <script src="main.js" charset="utf-8" type="text/javascript"></script>
+</body>
+</html>

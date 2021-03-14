@@ -1,0 +1,48 @@
+.current-money {
+    color:green;
+}
+
+//  /* Comments out the next CSS construct - the 'body' thing below */
+
+body { /* no period means element type */
+    text-align: center; /* text-align centers text AND children */
+}
+
+h2 {
+    text-align: center;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.header {
+    border: 1px solid red;
+    padding: 15px;
+}
+
+.menu {
+    width: 25%;
+    float: left;
+    padding: 15px;
+    border: 1px solid red;
+}
+
+.main {
+    width: 75%;
+    float: left;
+    padding: 15px;
+    border: 1px solid red;
+}
+
+.main-column {  /* idk exactly what 30% does here */
+    width: 30%;
+    float: left;
+    padding: 15px;
+    border: 1px solid red;
+}
+
+.main-row {
+    padding: 15px;
+    border: 1px solid red;
+}
