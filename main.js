@@ -18,6 +18,13 @@ var initialGameData = {
         upgradeLevel: 1,
         upgradeCost: 2000
     },
+    politician: {
+        qty: 0,
+        cost: 2000,
+        output: 6,
+        upgradeLevel: 1,
+        upgradePPCost: 10
+    },
     specialProjects: {
         sp001: false,
         sp002: false,
@@ -98,6 +105,7 @@ function updateEverything() {  // call on load
     updatehandPrintButton()
     updateAssetInfo('intern')
     updateAssetInfo('printer')
+    updateAssetInfo('politician')
     viewSpecialProjects()
     updateMenuButtons()
 }
@@ -162,6 +170,13 @@ function updateAssetInfo(object) {
         update('printerQty', qty + lvl + inc)
         update("buyPrinterButton", "Buy Printer (Cost: $" + format(gameData.printer.cost, 'money') + ")")
         update('printerUpgrade', "Upgrade (Cost: $" + format(gameData.printer.upgradeCost, 'money') + ")")
+    } else if (object == 'politician') {
+        let qty = "Politicians: " + gameData.printer.qty
+        let lvl = " (Level " + gameData.politician.upgradeLevel + ")"
+        let inc = " - $" + format(gameData.politician.output * 60, 'money') + "/min each"
+        update('politicianQty', qty + lvl + inc)
+        update("buyPoliticianButton", "Buy Politician (Cost: $" + format(gameData.politician.cost, 'money') + ")")
+        update('politicianUpgrade', "Upgrade (Cost: $" + format(gameData.politician.upgradeCost, 'money') + ")")
     }
     
 }
@@ -346,6 +361,29 @@ function buyPrinterUpgrade() {
         gameData.printer.upgradeCost = gameData.printer.upgradeCost * 1.8
         updateAssetInfo('printer')
         updateMoney()
+    }
+}
+
+// Politicians
+
+function buyPoliticians() {
+    if (gameData.politicalPower >= gameData.politician.upgradePPCost) {
+        gameData.politicalPower -= gameData.politician.upgradePPCost
+        gameData.politician.qty += 1
+        gameData.politician.cost *= 1.776
+        updateAssetInfo('politician')
+        updatePP()
+    }
+}
+
+function buyPoliticianUpgrade() {
+    if (gameData.politicalPower >= gameData.politician.upgradePPCost) {
+        gameData.politicalPower -= gameData.politician.upgradePPCost
+        gameData.politician.upgradeLevel += 1
+        gameData.politician.output *= 1.068  // current rate of inflation
+        gameData.politician.upgradeCost = gameData.politician.upgradeCost * 1.2
+        updateAssetInfo('politician')
+        updatePP()
     }
 }
 
