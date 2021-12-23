@@ -40,6 +40,7 @@ var initialGameData = {
 }
 
 var gameData = initialGameData
+var ppSlider = document.getElementById("politicalSlider");
 
 ///
 /// Debug Functions
@@ -110,6 +111,7 @@ function updateEverything() {  // call on load
     updateAssetInfo('politician')
     viewSpecialProjects()
     updateMenuButtons()
+    saveGame()
 }
 
 function updateMoney() {
@@ -287,8 +289,6 @@ function specialProject002() {
 // Political Power
 //
 
-var ppSlider = document.getElementById("politicalSlider");
-
 // Update the current slider value (each time you drag the slider handle)
 ppSlider.oninput = function() {
     gameData.politicalPower.slider = this.value
@@ -312,6 +312,11 @@ function brr(r = 1) {
     gameData.money += gameData.moneyPerClick * r
     gameData.totalPrinted += gameData.moneyPerClick * r
     updateMoney()
+}
+
+function pppls(r = 1) {
+    gameData.politicalPower.amount += r
+    updatePP()
 }
 
 function buyMoneyPerClickUpgrade() {
@@ -413,7 +418,7 @@ if (savegame !== null) {  // if a save exists
 // Save gameData to local storage
 var saveGameLoop = window.setInterval(function() {
     saveGame()
-}, 10000)  // every 10 seconds
+}, 1000)  // every 1 second
 
 function saveGame() {
     localStorage.setItem("moneyPrinterSave", JSON.stringify(gameData))
