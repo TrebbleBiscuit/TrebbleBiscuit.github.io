@@ -387,8 +387,8 @@ function buyPoliticians() {
 }
 
 function buyPoliticianUpgrade() {
-    if (gameData.politicalPower >= gameData.politician.upgradePPCost) {
-        gameData.politicalPower -= gameData.politician.upgradePPCost
+    if (gameData.politicalPower.amount >= gameData.politician.upgradePPCost) {
+        gameData.politicalPower.amount -= gameData.politician.upgradePPCost
         gameData.politician.upgradeLevel += 1
         gameData.politician.output *= 1.068  // current rate of inflation
         gameData.politician.upgradePPCost = gameData.politician.upgradePPCost * 1.2
