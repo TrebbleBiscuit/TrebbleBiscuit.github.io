@@ -120,8 +120,10 @@ function updateMoney() {
 
 function updatePP() {
     document.getElementById("ppView").style.display = "none"
+    document.getElementById("manage-politicians").style.display = "none"
     if (gameData.specialProjects.sp002) {
-        document.getElementById("ppView").style.display = "inline-block"
+        document.getElementById("ppView").style.display = "inline"
+        document.getElementById("manage-politicians").style.display = "inline-block"
     }
     update('ppView', "Political Power: " + format(gameData.politicalPower.amount, "number") + " (" + format(getPPIncome() * 60, "number") + "/min)")
 }
