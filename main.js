@@ -83,12 +83,20 @@ function prestige() {
     gameData.money = 0
     gameData.intern.qty = 0
     gameData.printer.qty = 0
-    // TODO: have these set to vars instead of hard coded
-    gameData.intern.cost = 7.25
-    gameData.printer.cost = 80
-    gameData.intern.upgradeCost = 100
-    gameData.printer.upgradeCost = 2000
-    gameData.politician.upgradePPCost = 10
+    gameData.politician.qty = 0
+
+    gameData.intern.cost = initialGameData.intern.cost
+    gameData.printer.cost = initialGameData.printer.cost
+    gameData.politician.cost = initialGameData.politician.cost
+
+    gameData.intern.upgradeCost = initialGameData.intern.upgradeCost
+    gameData.printer.upgradeCost = initialGameData.printer.upgradeCost
+    gameData.politician.upgradePPCost = initialGameData.politician.upgradePPCost
+
+    for (key in gameData.specialProjects) {
+        gameData.specialProjects[key] = false
+    }
+
     updateEverything()
 }
 
@@ -315,6 +323,11 @@ function getPPIncome() {  // returns PP gained per second
 //
 // Assets
 //
+
+function getUpgradeCost(item) {
+    gameData[item].cost
+}
+
 
 // Hand Printer
 
