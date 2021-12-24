@@ -420,7 +420,19 @@ function buyPoliticianUpgrade() {
 // Load local storage to gameData
 var savegame = JSON.parse(localStorage.getItem("moneyPrinterSave"))
 if (savegame !== null) {  // if a save exists
-    gameData = savegame
+    gameData = {}
+    // Populate gameData
+    for (key in initialGameData) {
+        // use default values
+        if(initialGameData.hasOwnProperty(key)){
+            gameData[key] = initialGameData[key];
+        }
+        // instead use the savegame value if one exists
+        if(savegame.hasOwnProperty(key)){
+            gameData[key] = savegame[key];
+        }
+    }
+    // ignore properties in savegame that doen't exist in initialGameData
     ppSlider.value = gameData.politicalPower.slider  // visually update slider
     updateEverything()
 }
