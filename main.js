@@ -4,6 +4,13 @@ var initialGameData = {
     moneyPerClick: 1,
     moneyPerClickUpgradeCost: 10,
     lastTick: Date.now(),
+    ideal: {
+        qty: 0,
+        upgradeLevel: 1,
+        baseCost: 100,
+        baseOuput: 10,
+        baseUpgradeCost: 200
+    },
     intern: {
         qty: 0,
         cost: 7.25,
@@ -36,6 +43,27 @@ var initialGameData = {
         amount: 0,
         slider: 0,
         cost: 1000
+    }
+}
+
+
+var gameNumbers = {
+    'intern': {
+        baseCost: 7.25,
+        baseOuput: 0.5,
+        baseUpgradeCost: 100,
+        // upgradeCostAdd: 10,
+        // upgradeCostMulti: 1.015,
+    },
+    'printer': {
+        baseCost: 80,
+        baseOuput: 5,
+        baseUpgradeCost: 2000
+    },
+    'politician': {
+        baseCost: 2000,
+        baseOuput: 16,
+        baseUpgradePPCost: 10
     }
 }
 
@@ -134,6 +162,10 @@ function updatePP() {
         document.getElementById("manage-politicians").style.display = "inline-block"
     }
     update('ppView', "Political Power: " + format(gameData.politicalPower.amount, "number") + " (" + format(getPPIncome() * 60, "number") + "/min)")
+}
+
+function getOutput(prod) {  // returns output per second of some product like 'printer'
+    gameNumbers[prod].baseOutput
 }
 
 function getRawIncome() {  // returns income per second BEFORE political power
