@@ -1,33 +1,40 @@
 class Generator {
-    constructor(baseCost, baseOutput, qtyCostAdd, qtyCostMulti, baseUpgradeCost, upgradeCostAdd, upgradeCostMulti, upgradeOutputMulti) {
+    constructor(baseCost=10, baseOutput=1, qtyCostAdd=0, qtyCostMulti=1, baseUpgradeCost=0, upgradeCostAdd=0, upgradeCostMulti=1, baseUpgradePPCost=0, upgradePPCostAdd=0, upgradePPCostMulti=1, upgradeOutputMulti=1) {
         // baseCost - initial cost value for purchase
         // baseOutput - initial output value per second
+        this.baseCost = baseCost;
+        this.baseOutput = baseOutput;
         // Quantity cost addition (added to cost of "factory" when another one is purchased)
         // Quantity cost multiplier (multiplied to cost of "factory" when one is purchased)
+        this.qtyCostAdd = qtyCostAdd;
+        this.qtyCostMulti = qtyCostMulti;
         // baseUpgradeCost - initial cost value for upgrade
         // Upgrade cost addition (added to cost of upgrade when one is purchased)
         // Upgrade cost multiplier (multiplied to cost of upgrade when one is purchased)
-        // Upgrade output multiplier (multiplied to output of product when upgrade is purchased)
-        this.baseCost = baseCost;
-        this.baseOutput = baseOutput;
-        this.qtyCostAdd = qtyCostAdd;
-        this.qtyCostMulti = qtyCostMulti;
         this.baseUpgradeCost = baseUpgradeCost;
         this.upgradeCostAdd = upgradeCostAdd;
         this.upgradeCostMulti = upgradeCostMulti;
+        //
+        //
+        //
+        this.baseUpgradePPCost = baseUpgradePPCost
+        this.upgradePPCostAdd = upgradePPCostAdd
+        this.upgradePPCostMulti = upgradePPCostMulti
+        // Upgrade output multiplier (multiplied to output of product when upgrade is purchased)
         this.upgradeOutputMulti = upgradeOutputMulti;
-        this.qty = 0
-        this.upgradeLevel = 0
+        // this.qty = 0
+        // this.upgradeLevel = 0
     }
-    // Getter
-    get cost(qty) {
-        return ((this.baseCost * (this.qtyCostMulti ** this.qty)) + (this.qtyCostAdd * this.qty));
+    getCost(qty) {
+        return ((this.baseCost * (this.qtyCostMulti ** qty)) + (this.qtyCostAdd * qty));
     }
-    get costUpgrade(level) {
-        return (this.baseUpgradeCost * Math.pow(this.upgradeCostMulti, this.upgradeLevel)) + (this.upgradeCostAdd * this.upgradeLevel)
+    getUpgradeCost(upgradeLevel) {
+        return (this.baseUpgradeCost * Math.pow(this.upgradeCostMulti, upgradeLevel)) + (this.upgradeCostAdd * upgradeLevel)
     }
-    // Method
-    calcIncome() {
-        return (this.qty * (this.baseOutput * Math.pow(this.upgradeOutputMulti, this.upgradeLevel)));
+    getUpgradePPCost(upgradeLevel) {
+        return 0
+    }
+    calcIncome(qty, upgradeLevel) {
+        return (qty * (this.baseOutput * Math.pow(this.upgradeOutputMulti, upgradeLevel)));
     }
 }

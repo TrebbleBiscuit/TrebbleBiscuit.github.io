@@ -52,8 +52,8 @@ HEADLINE: Republocrats denounce Fed's $15 trillion asset purchase plan as "a pal
                 <button onclick="buyMoneyPerClickUpgrade()", id='perClickUpgrade'>Upgrade - Cost: $10</button>
             </div>
             <div class='main-row', id='manage-interns'>
-                <button onclick="buyInterns()", id='hireInternButton'>Hire Intern (costs $7.25)</button>
-                <button onclick="buyInternUpgrade()", id='internUpgrade'>Upgrade - Cost: $10</button>
+                <button onclick="buyGenerator('intern')", id='buyInternButton'>Hire Intern (costs $7.25)</button>
+                <button onclick="buyGeneratorUpgrade('intern')", id='internUpgrade'>Upgrade - Cost: $10</button>
             </div>
             <div class='main-row', id='manage-printers'>
                 <button onclick="buyPrinters()", id='buyPrinterButton'>Buy Printer (costs $80)</button>
@@ -85,6 +85,7 @@ HEADLINE: Republocrats denounce Fed's $15 trillion asset purchase plan as "a pal
             <input type="range" min="0" max="100" value="0" id="politicalSlider">
         </div>
     </div>
+    <script src="generator.js" charset="utf-8" type="text/javascript"></script>
     <script src="main.js" charset="utf-8" type="text/javascript"></script>
 </body>
 </html>
