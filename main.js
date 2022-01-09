@@ -4,30 +4,17 @@ var initialGameData = {
     moneyPerClick: 1,
     moneyPerClickUpgradeCost: 10,
     lastTick: Date.now(),
-    ideal: {
-        qty: 0,
-        upgradeLevel: 0,
-        baseCost: 100,
-        baseOuput: 10,
-        baseUpgradeCost: 200
-    },
     intern: {
         qty: 0,
         upgradeLevel: 0,
     },
     printer: {
         qty: 0,
-        cost: 80,
-        output: 5,
         upgradeLevel: 0,
-        upgradeCost: 2000
     },
     politician: {
         qty: 0,
-        cost: 2000,
-        output: 16,
         upgradeLevel: 0,
-        upgradePPCost: 10
     },
     specialProjects: {
         sp001: false,
@@ -64,11 +51,11 @@ const generators = {
         // qtyCostAdd = 0,
         qtyCostMulti = 1.4,
         baseUpgradeCost = 2000,
-        upgradeCostAdd = 0,
+        // upgradeCostAdd = 0,
         upgradeCostMulti = 1.6,
-        baseUpgradePPCost = 0,
-        upgradePPCostAdd = 0,
-        upgradePPCostMulti = 1,
+        // baseUpgradePPCost = 0,
+        // upgradePPCostAdd = 0,
+        // upgradePPCostMulti = 1,
         upgradeOutputMulti = 1.1355
     ),
     politician: new Generator(
@@ -127,46 +114,46 @@ function showMeTheMoney(amt=1e11) {
     updateMoney()
 }
 
-function operationCwal() {
-    gameData.intern.cost = 0
-    gameData.printer.cost = 0
-    updateEverything()
-}
+// function operationCwal() {
+//     gameData.intern.cost = 0
+//     gameData.printer.cost = 0
+//     updateEverything()
+// }
 
-function somethingForNothing() {
-    gameData.moneyPerClickUpgradeCost = 0
-    gameData.intern.upgradeCost = 0
-    gameData.printer.upgradeCost = 0
-    gameData.politician.upgradePPCost = 0
-    updateEverything()
-}
+// function somethingForNothing() {
+//     gameData.moneyPerClickUpgradeCost = 0
+//     gameData.intern.upgradeCost = 0
+//     gameData.printer.upgradeCost = 0
+//     gameData.politician.upgradePPCost = 0
+//     updateEverything()
+// }
 
 function bankruptcy() {
     gameData.money = 0
     updateMoney()
 }
 
-function prestige() {
-    // lose all money and assets, costs reset, but you keep upgrades
-    gameData.money = 0
-    gameData.intern.qty = 0
-    gameData.printer.qty = 0
-    gameData.politician.qty = 0
+// function prestige() {
+//     // lose all money and assets, costs reset, but you keep upgrades
+//     gameData.money = 0
+//     gameData.intern.qty = 0
+//     gameData.printer.qty = 0
+//     gameData.politician.qty = 0
 
-    gameData.intern.cost = initialGameData.intern.cost
-    gameData.printer.cost = initialGameData.printer.cost
-    gameData.politician.cost = initialGameData.politician.cost
+//     gameData.intern.cost = initialGameData.intern.cost
+//     gameData.printer.cost = initialGameData.printer.cost
+//     gameData.politician.cost = initialGameData.politician.cost
 
-    gameData.intern.upgradeCost = initialGameData.intern.upgradeCost
-    gameData.printer.upgradeCost = initialGameData.printer.upgradeCost
-    gameData.politician.upgradePPCost = initialGameData.politician.upgradePPCost
+//     gameData.intern.upgradeCost = initialGameData.intern.upgradeCost
+//     gameData.printer.upgradeCost = initialGameData.printer.upgradeCost
+//     gameData.politician.upgradePPCost = initialGameData.politician.upgradePPCost
 
-    for (key in gameData.specialProjects) {
-        gameData.specialProjects[key] = false
-    }
+//     for (key in gameData.specialProjects) {
+//         gameData.specialProjects[key] = false
+//     }
 
-    updateEverything()
-}
+//     updateEverything()
+// }
 
 //
 // Update Functions
