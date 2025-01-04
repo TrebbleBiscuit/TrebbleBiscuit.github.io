@@ -95,46 +95,11 @@ function showMeTheMoney(amt=1e11) {
     updateMoney()
 }
 
-// function operationCwal() {
-//     gameData.intern.cost = 0
-//     gameData.printer.cost = 0
-//     updateEverything()
-// }
-
-// function somethingForNothing() {
-//     gameData.moneyPerClickUpgradeCost = 0
-//     gameData.intern.upgradeCost = 0
-//     gameData.printer.upgradeCost = 0
-//     gameData.politician.upgradePPCost = 0
-//     updateEverything()
-// }
 
 function bankruptcy() {
     gameData.money = 0
     updateMoney()
 }
-
-// function prestige() {
-//     // lose all money and assets, costs reset, but you keep upgrades
-//     gameData.money = 0
-//     gameData.intern.qty = 0
-//     gameData.printer.qty = 0
-//     gameData.politician.qty = 0
-
-//     gameData.intern.cost = initialGameData.intern.cost
-//     gameData.printer.cost = initialGameData.printer.cost
-//     gameData.politician.cost = initialGameData.politician.cost
-
-//     gameData.intern.upgradeCost = initialGameData.intern.upgradeCost
-//     gameData.printer.upgradeCost = initialGameData.printer.upgradeCost
-//     gameData.politician.upgradePPCost = initialGameData.politician.upgradePPCost
-
-//     for (key in gameData.specialProjects) {
-//         gameData.specialProjects[key] = false
-//     }
-
-//     updateEverything()
-// }
 
 //
 // Update Functions
@@ -244,30 +209,6 @@ function updateAssetInfo(object) {
     }
     update('buy' + capitalized + 'Button', 'Buy ' + capitalized + ' (Cost: $' + format(cost, 'money') + ')')
     update(object + 'Upgrade', "Upgrade (Cost: $" + format(upgradeCost, 'money') + ")")
-    //
-    // if (object == 'intern') {
-    //     let qty = "Interns: " + gameData.intern.qty
-    //     let lvl = " (Level " + gameData.intern.upgradeLevel + ")"
-    //     let inc = " - $" + format(gameData.intern.output * 60, 'money') + "/min each"
-    //     update('internQty', qty + lvl + inc)
-    //     update("buyInternButton", "Hire Intern (Cost: $" + format(generators.intern.getCost(gameData.intern.qty), 'money') + ")")
-    //     update('internUpgrade', "Upgrade (Cost: $" + format(intern.getUpgradeCost(gameData.intern.upgradeLevel), 'money') + ")")
-    // } else if (object == 'printer') {
-    //     let qty = "Printers: " + gameData.printer.qty
-    //     let lvl = " (Level " + gameData.printer.upgradeLevel + ")"
-    //     let inc = " - $" + format(gameData.printer.output * 60, 'money') + "/min each"
-    //     update('printerQty', qty + lvl + inc)
-    //     update("buyPrinterButton", "Buy Printer (Cost: $" + format(gameData.printer.cost, 'money') + ")")
-    //     update('printerUpgrade', "Upgrade (Cost: $" + format(gameData.printer.upgradeCost, 'money') + ")")
-    // } else if (object == 'politician') {
-    //     let qty = "Politicians: " + gameData.politician.qty
-    //     let lvl = " (Level " + gameData.politician.upgradeLevel + ")"
-    //     let inc = " - $" + format(gameData.politician.output * 60, 'money') + "/min each"
-    //     update('politicianQty', qty + lvl + inc)
-    //     update("buyPoliticianButton", "Buy Politician (Cost: $" + format(gameData.politician.cost, 'money') + ")")
-    //     update('politicianUpgrade', "Upgrade (Cost: " + format(gameData.politician.upgradePPCost, 'number') + " PP)")
-    // }
-    
 }
 
 function updateMenuButtons() {
@@ -350,11 +291,22 @@ function specialProject001() {
     if (gameData.money > 2000) {
         gameData.money -= 2000
         gameData.specialProjects.sp001 = true
-        gameData.intern.cost *= 0.2
-        gameData.intern.upgradeCost *= 0.5
+        enableSpeicalProject("sp001")
         viewSpecialProjects()
         updateMoney()
         updateAssetInfo('intern')
+    }
+}
+
+function enableSpeicalProject(proj) {
+    switch(proj) {
+        case "sp001":
+            generators.intern.baseCost = 2.50
+            break
+        case "sp002":
+            break
+        default: 
+            log("Unexpected special project key: " + proj)
     }
 }
 
@@ -457,9 +409,15 @@ if (savegame !== null) {  // if a save exists
     }
     // ignore properties in savegame that doen't exist in initialGameData
     ppSlider.value = gameData.politicalPower.slider  // visually update slider
+
+    for (specialProject in gameData.specialProjects) {
+        if (gameData.specialProjects[specialProject]) {
+            // bug: these are not disabled on reset()
+            enableSpeicalProject(specialProject)
+        }
+    }
 }
 updateEverything()
-
 
 // Save gameData to local storage
 var saveGameLoop = window.setInterval(function() {
