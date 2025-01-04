@@ -32,47 +32,45 @@ var initialGameData = {
 
 // Generator(baseCost, baseOutput, qtyCostAdd, qtyCostMulti, baseUpgradeCost, upgradeCostAdd, upgradeCostMulti, upgradeOutputMulti)
 const generators = {
-    // note: javascript doesn't have keyword args!
-    // so you have to specify all values, even non-default
-    intern: new Generator(
-        baseCost = 7.25,
-        baseOutput = 0.5,
-        qtyCostAdd = 1.75,
-        qtyCostMulti = 1.4,
-        baseUpgradeCost = 100,
-        upgradeCostAdd = 10,
-        upgradeCostMulti = 1.015,
-        baseUpgradePPCost = 0,
-        upgradePPCostAdd = 0,
-        upgradePPCostMulti = 1,
-        upgradeOutputMulti = 1.6
-    ),
-    printer: new Generator(
-        baseCost = 80,
-        baseOutput = 5,
-        qtyCostAdd = 0,
-        qtyCostMulti = 1.4,
-        baseUpgradeCost = 2000,
-        upgradeCostAdd = 0,
-        upgradeCostMulti = 1.6,
-        baseUpgradePPCost = 0,
-        upgradePPCostAdd = 0,
-        upgradePPCostMulti = 1,
-        upgradeOutputMulti = 1.1355
-    ),
-    politician: new Generator(
-        baseCost = 2000,
-        baseOutput = 16,
-        qtyCostAdd = 0,
-        qtyCostMulti = 17.76,
-        baseUpgradeCost = 0,
-        upgradeCostAdd = 0,
-        upgradeCostMulti = 1,
-        baseUpgradePPCost = 10,
-        upgradePPCostAdd = 0,
-        upgradePPCostMulti = 1.2,
-        upgradeOutputMulti = 1.068
-    ),
+    intern: new Generator({
+        baseCost: 7.25,
+        baseOutput:  0.5,
+        qtyCostAdd:  1.75,
+        qtyCostMulti:  1.4,
+        baseUpgradeCost:  100,
+        upgradeCostAdd:  10,
+        upgradeCostMulti:  1.015,
+        // baseUpgradePPCost:  0,
+        // upgradePPCostAdd:  0,
+        // upgradePPCostMulti:  1,
+        upgradeOutputMulti:  1.6
+    }),
+    printer: new Generator({
+        baseCost:  80,
+        baseOutput:  5,
+        // qtyCostAdd:  0,
+        qtyCostMulti:  1.4,
+        baseUpgradeCost:  2000,
+        upgradeCostAdd:  0,
+        upgradeCostMulti:  1.6,
+        // baseUpgradePPCost:  0,
+        // upgradePPCostAdd:  0,
+        // upgradePPCostMulti:  1,
+        upgradeOutputMulti:  1.1355
+    }),
+    politician: new Generator({
+        baseCost:  2000,
+        baseOutput:  16,
+        // qtyCostAdd:  0,
+        qtyCostMulti:  17.76,
+        // baseUpgradeCost:  0,
+        // upgradeCostAdd:  0,
+        // upgradeCostMulti:  1,
+        baseUpgradePPCost:  10,
+        // upgradePPCostAdd:  0,
+        upgradePPCostMulti:  1.2,
+        upgradeOutputMulti:  1.068
+    }),
 }
 
 var gameData = initialGameData
@@ -301,7 +299,8 @@ function specialProject001() {
 function enableSpeicalProject(proj) {
     switch(proj) {
         case "sp001":
-            generators.intern.baseCost = 2.50
+            generators.intern.baseCost = 2.25
+            generators.intern.baseUpgradeCost = 50
             break
         case "sp002":
             break

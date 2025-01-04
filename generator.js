@@ -1,5 +1,5 @@
 class Generator {
-    constructor(baseCost=10, baseOutput=1, qtyCostAdd=0, qtyCostMulti=1, baseUpgradeCost=0, upgradeCostAdd=0, upgradeCostMulti=1, baseUpgradePPCost=0, upgradePPCostAdd=0, upgradePPCostMulti=1, upgradeOutputMulti=1) {
+    constructor({baseCost=10, baseOutput=1, qtyCostAdd=0, qtyCostMulti=1, baseUpgradeCost=0, upgradeCostAdd=0, upgradeCostMulti=1, baseUpgradePPCost=0, upgradePPCostAdd=0, upgradePPCostMulti=1, upgradeOutputMulti=1} = {}) {
         // baseCost - initial cost value for purchase
         // baseOutput - initial output value per second
         this.baseCost = baseCost;
