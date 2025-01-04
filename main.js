@@ -143,8 +143,16 @@ function getIncome() {  // returns income per second
     return r
 }
 
+function getIncomeSuppText() {
+    if (gameData.politicalPower.slider > 0) {
+        return "(" + gameData.politicalPower.slider + "% to PP)"
+    } else {
+        return ""
+    }
+}
+
 function updateIncome() {
-    update("currentIncome", "Printing: $" + format(getIncome() * 60, "money") + "/min")
+    update("currentIncome", "Printing: $" + format(getIncome() * 60, "money") + "/min " + getIncomeSuppText())
     // Fun fact: In late march of 2020 the fed created about 1 million dollars every second.
 }
 
@@ -363,7 +371,7 @@ function buyPrinters() {
     if (gameData.money >= gameData.printer.cost) {
         gameData.money -= gameData.printer.cost
         gameData.printer.qty += 1
-        gameData.printer.cost *= 1.7
+        gameData.printer.cost *= 1.4
         updateAssetInfo('printer')
         updateMoney()
     }
@@ -374,8 +382,8 @@ function buyPrinterUpgrade() {
         gameData.money -= gameData.printer.upgradeCost
         gameData.printer.upgradeLevel += 1
         // gameData.printer.output = gameData.printer.upgradeLevel + Math.pow(1.12, gameData.printer.output)
-        gameData.printer.output *= 1.014  // current rate of inflation
-        gameData.printer.upgradeCost = gameData.printer.upgradeCost * 1.8
+        gameData.printer.output *= 1.1355  // inflation in 1980
+        gameData.printer.upgradeCost = gameData.printer.upgradeCost * 1.6
         updateAssetInfo('printer')
         updateMoney()
     }
@@ -412,7 +420,19 @@ function buyPoliticianUpgrade() {
 // Load local storage to gameData
 var savegame = JSON.parse(localStorage.getItem("moneyPrinterSave"))
 if (savegame !== null) {  // if a save exists
-    gameData = savegame
+    gameData = {}
+    // Populate gameData
+    for (key in initialGameData) {
+        // use default values
+        if(initialGameData.hasOwnProperty(key)){
+            gameData[key] = initialGameData[key];
+        }
+        // instead use the savegame value if one exists
+        if(savegame.hasOwnProperty(key)){
+            gameData[key] = savegame[key];
+        }
+    }
+    // ignore properties in savegame that doen't exist in initialGameData
     ppSlider.value = gameData.politicalPower.slider  // visually update slider
     updateEverything()
 }
