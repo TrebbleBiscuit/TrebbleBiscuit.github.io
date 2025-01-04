@@ -32,6 +32,8 @@ var initialGameData = {
 
 // Generator(baseCost, baseOutput, qtyCostAdd, qtyCostMulti, baseUpgradeCost, upgradeCostAdd, upgradeCostMulti, upgradeOutputMulti)
 const generators = {
+    // note: javascript doesn't have keyword args!
+    // so you have to specify all values, even non-default
     intern: new Generator(
         baseCost = 7.25,
         baseOutput = 0.5,
@@ -40,59 +42,38 @@ const generators = {
         baseUpgradeCost = 100,
         upgradeCostAdd = 10,
         upgradeCostMulti = 1.015,
-        // baseUpgradePPCost = 0,
-        // upgradePPCostAdd = 0,
-        // upgradePPCostMulti = 1,
+        baseUpgradePPCost = 0,
+        upgradePPCostAdd = 0,
+        upgradePPCostMulti = 1,
         upgradeOutputMulti = 1.6
     ),
     printer: new Generator(
         baseCost = 80,
         baseOutput = 5,
-        // qtyCostAdd = 0,
+        qtyCostAdd = 0,
         qtyCostMulti = 1.4,
         baseUpgradeCost = 2000,
-        // upgradeCostAdd = 0,
+        upgradeCostAdd = 0,
         upgradeCostMulti = 1.6,
-        // baseUpgradePPCost = 0,
-        // upgradePPCostAdd = 0,
-        // upgradePPCostMulti = 1,
+        baseUpgradePPCost = 0,
+        upgradePPCostAdd = 0,
+        upgradePPCostMulti = 1,
         upgradeOutputMulti = 1.1355
     ),
     politician: new Generator(
         baseCost = 2000,
         baseOutput = 16,
-        // qtyCostAdd = 0,
+        qtyCostAdd = 0,
         qtyCostMulti = 17.76,
-        // baseUpgradeCost = 0,
-        // upgradeCostAdd = 0,
-        // upgradeCostMulti = 1,
+        baseUpgradeCost = 0,
+        upgradeCostAdd = 0,
+        upgradeCostMulti = 1,
         baseUpgradePPCost = 10,
-        // upgradePPCostAdd = 0,
+        upgradePPCostAdd = 0,
         upgradePPCostMulti = 1.2,
         upgradeOutputMulti = 1.068
     ),
 }
-
-
-// var gameNumbers = {
-//     'intern': {
-//         baseCost: 7.25,
-//         baseOuput: 0.5,
-//         baseUpgradeCost: 100,
-//         // upgradeCostAdd: 10,
-//         // upgradeCostMulti: 1.015,
-//     },
-//     'printer': {
-//         baseCost: 80,
-//         baseOuput: 5,
-//         baseUpgradeCost: 2000
-//     },
-//     'politician': {
-//         baseCost: 2000,
-//         baseOuput: 16,
-//         baseUpgradePPCost: 10
-//     }
-// }
 
 var gameData = initialGameData
 var ppSlider = document.getElementById("politicalSlider");
@@ -256,7 +237,11 @@ function updateAssetInfo(object) {
     let qtyMessage = capitalized + "s: " + qty
     let lvlMessage = " (Level " + lvl + ")"
     let incMessage = " - $" + format(inc * 60, 'money') + "/min each"
-    update(object + 'Qty', qtyMessage + lvlMessage + incMessage)
+    if (qty > 0) {
+        update(object + 'Qty', qtyMessage + lvlMessage + incMessage)
+    } else {
+        update(object + 'Qty', qtyMessage)
+    }
     update('buy' + capitalized + 'Button', 'Buy ' + capitalized + ' (Cost: $' + format(cost, 'money') + ')')
     update(object + 'Upgrade', "Upgrade (Cost: $" + format(upgradeCost, 'money') + ")")
     //
@@ -451,78 +436,6 @@ function buyGeneratorUpgrade(gen) {
     }
 }
 
-// Interns
-
-// function buyInterns() {
-//     internCost = intern.getCost(gameData.intern.qty)
-//     if (gameData.money >= internCost) {
-//         gameData.money -= internCost
-//         gameData.intern.qty += 1
-//         updateAssetInfo('intern')
-//         updateMoney()
-//     }
-// }
-
-// function buyInternUpgrade() {
-//     upgradeCost = intern.getCost(gameData.intern.qty)
-//     if (gameData.money >= upgradeCost) {
-//         gameData.money -= upgradeCost
-//         gameData.intern.upgradeLevel += 1
-//         updateAssetInfo('intern')
-//         updateMoney()
-//     }
-// }
-
-// function getCostOfMany() {}
-
-// Printers
-
-function buyPrinters() {
-    if (gameData.money >= gameData.printer.cost) {
-        gameData.money -= gameData.printer.cost
-        gameData.printer.qty += 1
-        gameData.printer.cost *= 1.4
-        updateAssetInfo('printer')
-        updateMoney()
-    }
-}
-
-function buyPrinterUpgrade() {
-    if (gameData.money >= gameData.printer.upgradeCost) {
-        gameData.money -= gameData.printer.upgradeCost
-        gameData.printer.upgradeLevel += 1
-        // gameData.printer.output = gameData.printer.upgradeLevel + Math.pow(1.12, gameData.printer.output)
-        gameData.printer.output *= 1.1355  // inflation in 1980
-        gameData.printer.upgradeCost = gameData.printer.upgradeCost * 1.6
-        updateAssetInfo('printer')
-        updateMoney()
-    }
-}
-
-// Politicians
-
-function buyPoliticians() {
-    if (gameData.money >= gameData.politician.cost) {
-        gameData.money -= gameData.politician.cost
-        gameData.politician.qty += 1
-        gameData.politician.cost *= 17.76
-        updateAssetInfo('politician')
-        updatePP()
-    }
-}
-
-function buyPoliticianUpgrade() {
-    if (gameData.politicalPower.amount >= gameData.politician.upgradePPCost) {
-        gameData.politicalPower.amount -= gameData.politician.upgradePPCost
-        gameData.politician.upgradeLevel += 1
-        gameData.politician.output *= 1.068  // current rate of inflation
-        gameData.politician.upgradePPCost = gameData.politician.upgradePPCost * 1.2
-        updateAssetInfo('politician')
-        updatePP()
-    }
-}
-
-
 //
 // Saving and Loading
 //
@@ -544,8 +457,9 @@ if (savegame !== null) {  // if a save exists
     }
     // ignore properties in savegame that doen't exist in initialGameData
     ppSlider.value = gameData.politicalPower.slider  // visually update slider
-    updateEverything()
 }
+updateEverything()
+
 
 // Save gameData to local storage
 var saveGameLoop = window.setInterval(function() {
