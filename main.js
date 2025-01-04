@@ -135,20 +135,16 @@ function updatePP() {
     update('ppView', "Political Power: " + format(gameData.politicalPower.amount, "number") + " (" + format(getPPIncome() * 60, "number") + "/min)")
 }
 
-// function getOutput(prod) {  // returns output per second of some product like 'printer'
-//     gameNumbers[prod].baseOutput
-// }
-
 function getRawIncome() {  // returns income per second BEFORE political power
     var r = 0
     for (gen in generators) {
-        r += generators[gen].calcIncome(gameData[gen].qty, gameData[gen].upgradeLevel)
+        let special_factor = 1
+        if (gen == "intern" && gameData.specialProjects.sp003) {
+            special_factor += (gameData[gen].qty / 100)   
+        }
+        r += gameData[gen].qty * special_factor * generators[gen].calcIncome(gameData[gen].qty, gameData[gen].upgradeLevel)
     }
     return r
-    // r += (gameData.intern.qty * gameData.intern.output)
-    // r += (gameData.printer.qty * gameData.printer.output)
-    // r += (gameData.politician.qty * gameData.politician.output)
-    // return r
 }
 
 function getIncome() {  // returns income per second
@@ -281,8 +277,10 @@ function log(obj) {
 function viewSpecialProjects() {
     document.getElementById("specProj001").style.display = "none"
     document.getElementById("specProj002").style.display = "none"
+    document.getElementById("specProj003").style.display = "none"
     document.getElementById("specProj001Finished").style.display = "none"
     document.getElementById("specProj002Finished").style.display = "none"
+    document.getElementById("specProj003Finished").style.display = "none"
     // TODO: "no projects yet" thing
     // also maybe update spec proj button when there's one available
     if (gameData.totalPrinted > 200 && !gameData.specialProjects.sp001) {
@@ -294,6 +292,11 @@ function viewSpecialProjects() {
         document.getElementById("specProj002").style.display = "inline-block"
     } else if (gameData.specialProjects.sp002) {
         document.getElementById("specProj002Finished").style.display = "inline-block"
+    }
+    if (gameData.totalPrinted > 10000 && !gameData.specialProjects.sp003) {
+        document.getElementById("specProj003").style.display = "inline-block"
+    } else if (gameData.specialProjects.sp003) {
+        document.getElementById("specProj003Finished").style.display = "inline-block"
     }
 }
 
@@ -308,6 +311,30 @@ function specialProject001() {
     }
 }
 
+function specialProject002() {
+    if (gameData.money > 15000) {
+        gameData.money -= 15000
+        gameData.specialProjects.sp002 = true
+        enableSpeicalProject("sp002")
+        viewSpecialProjects()
+        updateMoney()
+        updatePP()
+        updateMenuButtons()
+    }
+}
+
+function specialProject003() {
+    if (gameData.money > 25000) {
+        gameData.money -= 25000
+        gameData.specialProjects.sp003 = true
+        enableSpeicalProject("sp003")
+        viewSpecialProjects()
+        updateMoney()
+        updateAssetInfo('intern')
+    }
+}
+
+
 function enableSpeicalProject(proj) {
     switch(proj) {
         case "sp001":
@@ -316,21 +343,14 @@ function enableSpeicalProject(proj) {
             break
         case "sp002":
             break
+        case "sp003":
+            generators.intern.scaleFactor = 0.01
+            break
         default: 
             log("Unexpected special project key: " + proj)
     }
 }
 
-function specialProject002() {
-    if (gameData.money > 15000) {
-        gameData.money -= 15000
-        gameData.specialProjects.sp002 = true
-        viewSpecialProjects()
-        updateMoney()
-        updatePP()
-        updateMenuButtons()
-    }
-}
 
 //
 // Political Power

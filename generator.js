@@ -1,5 +1,5 @@
 class Generator {
-    constructor({baseCost=10, baseOutput=1, qtyCostAdd=0, qtyCostMulti=1, baseUpgradeCost=0, upgradeCostAdd=0, upgradeCostMulti=1, baseUpgradePPCost=0, upgradePPCostAdd=0, upgradePPCostMulti=1, upgradeOutputMulti=1} = {}) {
+    constructor({baseCost=10, baseOutput=1, qtyCostAdd=0, qtyCostMulti=1, baseUpgradeCost=0, upgradeCostAdd=0, upgradeCostMulti=1, baseUpgradePPCost=0, upgradePPCostAdd=0, upgradePPCostMulti=1, upgradeOutputMulti=1, scaleFactor=0} = {}) {
         // baseCost - initial cost value for purchase
         // baseOutput - initial output value per second
         this.baseCost = baseCost;
@@ -22,8 +22,9 @@ class Generator {
         this.upgradePPCostMulti = upgradePPCostMulti
         // Upgrade output multiplier (multiplied to output of product when upgrade is purchased)
         this.upgradeOutputMulti = upgradeOutputMulti;
-        // this.qty = 0
-        // this.upgradeLevel = 0
+        // Scale factor (multiplied to output of product AND quantity of generators)
+        // e.g. scale factor of 0.01 means that each 1 qty adds 1% effeciency to all generators of that type
+        this.scaleFactor = scaleFactor
     }
     getCost(qty) {
         return ((this.baseCost * (this.qtyCostMulti ** qty)) + (this.qtyCostAdd * qty));
@@ -35,6 +36,6 @@ class Generator {
         return this.baseUpgradePPCost * Math.pow(this.upgradePPCostMulti, upgradeLevel) + (this.upgradePPCostAdd * upgradeLevel)
     }
     calcIncome(qty, upgradeLevel) {
-        return (qty * (this.baseOutput * Math.pow(this.upgradeOutputMulti, upgradeLevel)));
+        return (qty * (1 + (qty * this.scaleFactor)) * this.baseOutput * Math.pow(this.upgradeOutputMulti, upgradeLevel));
     }
 }
