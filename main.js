@@ -38,12 +38,12 @@ const generators = {
         qtyCostAdd:  1.75,
         qtyCostMulti:  1.4,
         baseUpgradeCost:  100,
-        upgradeCostAdd:  10,
-        upgradeCostMulti:  1.015,
+        upgradeCostAdd:  30,
+        upgradeCostMulti:  1.07,
         // baseUpgradePPCost:  0,
         // upgradePPCostAdd:  0,
         // upgradePPCostMulti:  1,
-        upgradeOutputMulti:  1.6
+        upgradeOutputMulti:  1.07
     }),
     printer: new Generator({
         baseCost:  80,
@@ -52,7 +52,7 @@ const generators = {
         qtyCostMulti:  1.4,
         baseUpgradeCost:  2000,
         upgradeCostAdd:  0,
-        upgradeCostMulti:  1.6,
+        upgradeCostMulti:  1.5,
         // baseUpgradePPCost:  0,
         // upgradePPCostAdd:  0,
         // upgradePPCostMulti:  1,
@@ -66,10 +66,10 @@ const generators = {
         // baseUpgradeCost:  0,
         // upgradeCostAdd:  0,
         // upgradeCostMulti:  1,
-        baseUpgradePPCost:  10,
+        baseUpgradePPCost:  6,
         // upgradePPCostAdd:  0,
-        upgradePPCostMulti:  1.2,
-        upgradeOutputMulti:  1.068
+        upgradePPCostMulti:  1.4,
+        upgradeOutputMulti:  1.3
     }),
 }
 
@@ -197,6 +197,7 @@ function updateAssetInfo(object) {
     }
     let cost = generators[object].getCost(qty)
     let upgradeCost = generators[object].getUpgradeCost(lvl)
+    let upgradePPCost = generators[object].getUpgradePPCost(lvl)
     let qtyMessage = capitalized + "s: " + qty
     let lvlMessage = " (Level " + lvl + ")"
     let incMessage = " - $" + format(inc * 60, 'money') + "/min each"
@@ -205,8 +206,19 @@ function updateAssetInfo(object) {
     } else {
         update(object + 'Qty', qtyMessage)
     }
-    update('buy' + capitalized + 'Button', 'Buy ' + capitalized + ' (Cost: $' + format(cost, 'money') + ')')
-    update(object + 'Upgrade', "Upgrade (Cost: $" + format(upgradeCost, 'money') + ")")
+    update('buy' + capitalized + 'Button', 'Buy ' + capitalized + ' ' + get_cost_string(cost))
+    update(object + 'Upgrade', "Upgrade " + get_cost_string(upgradeCost, upgradePPCost))
+}
+
+function get_cost_string(money, politicalPower = 0) {
+    cost_string = "(Cost: "
+    if (money > 0) {
+        cost_string += "$" + format(money, 'money')
+    }
+    if (politicalPower > 0) {
+        cost_string += format(politicalPower, 'number') + " PP"
+    }
+    return cost_string + ")"
 }
 
 function updateMenuButtons() {
@@ -392,31 +404,37 @@ function buyGeneratorUpgrade(gen) {
 //
 
 // Load local storage to gameData
-var savegame = JSON.parse(localStorage.getItem("moneyPrinterSave"))
-if (savegame !== null) {  // if a save exists
-    gameData = {}
-    // Populate gameData
-    for (key in initialGameData) {
-        // use default values
-        if(initialGameData.hasOwnProperty(key)){
-            gameData[key] = initialGameData[key];
+function load_game() {
+    // Load local storage to gameData
+    var savegame = JSON.parse(localStorage.getItem("moneyPrinterSave"));
+    if (savegame !== null) { // if a save exists
+        gameData = {};
+        // Populate gameData
+        for (key in initialGameData) {
+            // use default values
+            if (initialGameData.hasOwnProperty(key)) {
+                gameData[key] = initialGameData[key];
+            }
+            // instead use the savegame value if one exists
+            if (savegame.hasOwnProperty(key)) {
+                gameData[key] = savegame[key];
+            }
         }
-        // instead use the savegame value if one exists
-        if(savegame.hasOwnProperty(key)){
-            gameData[key] = savegame[key];
-        }
-    }
-    // ignore properties in savegame that doen't exist in initialGameData
-    ppSlider.value = gameData.politicalPower.slider  // visually update slider
+        // ignore properties in savegame that doen't exist in initialGameData
+        ppSlider.value = gameData.politicalPower.slider; // visually update slider
 
-    for (specialProject in gameData.specialProjects) {
-        if (gameData.specialProjects[specialProject]) {
-            // bug: these are not disabled on reset()
-            enableSpeicalProject(specialProject)
+        for (specialProject in gameData.specialProjects) {
+            if (gameData.specialProjects[specialProject]) {
+                // bug: these are not disabled on reset()
+                enableSpeicalProject(specialProject);
+            }
         }
     }
+    updateEverything();
 }
-updateEverything()
+
+load_game();
+
 
 // Save gameData to local storage
 var saveGameLoop = window.setInterval(function() {

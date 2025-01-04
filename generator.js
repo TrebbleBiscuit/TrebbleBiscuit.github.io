@@ -32,7 +32,7 @@ class Generator {
         return (this.baseUpgradeCost * Math.pow(this.upgradeCostMulti, upgradeLevel)) + (this.upgradeCostAdd * upgradeLevel)
     }
     getUpgradePPCost(upgradeLevel) {
-        return 0
+        return this.baseUpgradePPCost * Math.pow(this.upgradePPCostMulti, upgradeLevel) + (this.upgradePPCostAdd * upgradeLevel)
     }
     calcIncome(qty, upgradeLevel) {
         return (qty * (this.baseOutput * Math.pow(this.upgradeOutputMulti, upgradeLevel)));
