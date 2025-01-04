@@ -52,23 +52,23 @@ HEADLINE: Republocrats denounce Fed's $15 trillion asset purchase plan as "a pal
                 <button onclick="buyMoneyPerClickUpgrade()", id='perClickUpgrade'>Upgrade - Cost: $10</button>
             </div>
             <div class='main-row', id='manage-interns'>
-                <button onclick="buyInterns()", id='hireInternButton'>Hire Intern (costs $7.25)</button>
-                <button onclick="buyInternUpgrade()", id='internUpgrade'>Upgrade - Cost: $10</button>
+                <button onclick="buyGenerator('intern')", id='buyInternButton'>Hire Intern (costs $7.25)</button>
+                <button onclick="buyGeneratorUpgrade('intern')", id='internUpgrade'>Upgrade - Cost: $10</button>
             </div>
             <div class='main-row', id='manage-printers'>
-                <button onclick="buyPrinters()", id='buyPrinterButton'>Buy Printer (costs $80)</button>
-                <button onclick="buyPrinterUpgrade()", id='printerUpgrade'>Upgrade - Cost: $2000</button>
+                <button onclick="buyGenerator('printer')", id='buyPrinterButton'>Buy Printer (costs $80)</button>
+                <button onclick="buyGeneratorUpgrade('printer')", id='printerUpgrade'>Upgrade - Cost: $2000</button>
             </div>
             <div class='main-row', id='manage-politicians'>
-                <button onclick="buyPoliticians()", id='buyPoliticianButton'>Buy Politician (Cost: $??)</button>
-                <button onclick="buyPoliticianUpgrade()", id='politicianUpgrade'>Upgrade - Cost: ?? PP</button>
+                <button onclick="buyGenerator('politician')", id='buyPoliticianButton'>Buy Politician (Cost: $??)</button>
+                <button onclick="buyGeneratorUpgrade('politician')", id='politicianUpgrade'>Upgrade - Cost: ?? PP</button>
             </div>
         </div>
         <div id='specialProjectsMenu'>
             <div id='specProj001'>
                 <h4>Special Project 1</h4>
                 <p>Instead of paying the graduate interns that do most of the work around here a living wage, we'll pay them in "valuable work experience".</p>
-                <p>Intern cost reduced by 80%, Upgrades cost reduced by 50%<p>
+                <p>Intern base cost reduced by 70%, Upgrade base cost reduced by 50%<p>
                 <button type="button", onclick=specialProject001()>Initiate Special Project (Cost: $2,000)</button>
             </div>
             <button disabled id='specProj001Finished'>Special Project 1 Finished</button>
@@ -85,6 +85,7 @@ HEADLINE: Republocrats denounce Fed's $15 trillion asset purchase plan as "a pal
             <input type="range" min="0" max="100" value="0" id="politicalSlider">
         </div>
     </div>
+    <script src="generator.js" charset="utf-8" type="text/javascript"></script>
     <script src="main.js" charset="utf-8" type="text/javascript"></script>
 </body>
 </html>

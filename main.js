@@ -6,24 +6,15 @@ var initialGameData = {
     lastTick: Date.now(),
     intern: {
         qty: 0,
-        cost: 7.25,
-        output: 0.5,
-        upgradeLevel: 1,
-        upgradeCost: 100
+        upgradeLevel: 0,
     },
     printer: {
         qty: 0,
-        cost: 80,
-        output: 5,
-        upgradeLevel: 1,
-        upgradeCost: 2000
+        upgradeLevel: 0,
     },
     politician: {
         qty: 0,
-        cost: 2000,
-        output: 16,
-        upgradeLevel: 1,
-        upgradePPCost: 10
+        upgradeLevel: 0,
     },
     specialProjects: {
         sp001: false,
@@ -37,6 +28,49 @@ var initialGameData = {
         slider: 0,
         cost: 1000
     }
+}
+
+// Generator(baseCost, baseOutput, qtyCostAdd, qtyCostMulti, baseUpgradeCost, upgradeCostAdd, upgradeCostMulti, upgradeOutputMulti)
+const generators = {
+    intern: new Generator({
+        baseCost: 7.25,
+        baseOutput:  0.5,
+        qtyCostAdd:  1.75,
+        qtyCostMulti:  1.4,
+        baseUpgradeCost:  100,
+        upgradeCostAdd:  10,
+        upgradeCostMulti:  1.015,
+        // baseUpgradePPCost:  0,
+        // upgradePPCostAdd:  0,
+        // upgradePPCostMulti:  1,
+        upgradeOutputMulti:  1.6
+    }),
+    printer: new Generator({
+        baseCost:  80,
+        baseOutput:  5,
+        // qtyCostAdd:  0,
+        qtyCostMulti:  1.4,
+        baseUpgradeCost:  2000,
+        upgradeCostAdd:  0,
+        upgradeCostMulti:  1.6,
+        // baseUpgradePPCost:  0,
+        // upgradePPCostAdd:  0,
+        // upgradePPCostMulti:  1,
+        upgradeOutputMulti:  1.1355
+    }),
+    politician: new Generator({
+        baseCost:  2000,
+        baseOutput:  16,
+        // qtyCostAdd:  0,
+        qtyCostMulti:  17.76,
+        // baseUpgradeCost:  0,
+        // upgradeCostAdd:  0,
+        // upgradeCostMulti:  1,
+        baseUpgradePPCost:  10,
+        // upgradePPCostAdd:  0,
+        upgradePPCostMulti:  1.2,
+        upgradeOutputMulti:  1.068
+    }),
 }
 
 var gameData = initialGameData
@@ -59,37 +93,10 @@ function showMeTheMoney(amt=1e11) {
     updateMoney()
 }
 
-function operationCwal() {
-    gameData.intern.cost = 0
-    gameData.printer.cost = 0
-    updateEverything()
-}
-
-function somethingForNothing() {
-    gameData.moneyPerClickUpgradeCost = 0
-    gameData.intern.upgradeCost = 0
-    gameData.printer.upgradeCost = 0
-    gameData.politician.upgradePPCost = 0
-    updateEverything()
-}
 
 function bankruptcy() {
     gameData.money = 0
     updateMoney()
-}
-
-function prestige() {
-    // lose all money and assets, costs reset, but you keep upgrades
-    gameData.money = 0
-    gameData.intern.qty = 0
-    gameData.printer.qty = 0
-    // TODO: have these set to vars instead of hard coded
-    gameData.intern.cost = 7.25
-    gameData.printer.cost = 80
-    gameData.intern.upgradeCost = 100
-    gameData.printer.upgradeCost = 2000
-    gameData.politician.upgradePPCost = 10
-    updateEverything()
 }
 
 //
@@ -128,12 +135,20 @@ function updatePP() {
     update('ppView', "Political Power: " + format(gameData.politicalPower.amount, "number") + " (" + format(getPPIncome() * 60, "number") + "/min)")
 }
 
+// function getOutput(prod) {  // returns output per second of some product like 'printer'
+//     gameNumbers[prod].baseOutput
+// }
+
 function getRawIncome() {  // returns income per second BEFORE political power
     var r = 0
-    r += (gameData.intern.qty * gameData.intern.output)
-    r += (gameData.printer.qty * gameData.printer.output)
-    r += (gameData.politician.qty * gameData.politician.output)
+    for (gen in generators) {
+        r += generators[gen].calcIncome(gameData[gen].qty, gameData[gen].upgradeLevel)
+    }
     return r
+    // r += (gameData.intern.qty * gameData.intern.output)
+    // r += (gameData.printer.qty * gameData.printer.output)
+    // r += (gameData.politician.qty * gameData.politician.output)
+    // return r
 }
 
 function getIncome() {  // returns income per second
@@ -171,29 +186,27 @@ function updatehandPrintButton() {
 // Updates content of element with ID qty{object} 
 function updateAssetInfo(object) {
     updateIncome()
-    if (object == 'intern') {
-        let qty = "Interns: " + gameData.intern.qty
-        let lvl = " (Level " + gameData.intern.upgradeLevel + ")"
-        let inc = " - $" + format(gameData.intern.output * 60, 'money') + "/min each"
-        update('internQty', qty + lvl + inc)
-        update("hireInternButton", "Hire Intern (Cost: $" + format(gameData.intern.cost, 'money') + ")")
-        update('internUpgrade', "Upgrade (Cost: $" + format(gameData.intern.upgradeCost, 'money') + ")")
-    } else if (object == 'printer') {
-        let qty = "Printers: " + gameData.printer.qty
-        let lvl = " (Level " + gameData.printer.upgradeLevel + ")"
-        let inc = " - $" + format(gameData.printer.output * 60, 'money') + "/min each"
-        update('printerQty', qty + lvl + inc)
-        update("buyPrinterButton", "Buy Printer (Cost: $" + format(gameData.printer.cost, 'money') + ")")
-        update('printerUpgrade', "Upgrade (Cost: $" + format(gameData.printer.upgradeCost, 'money') + ")")
-    } else if (object == 'politician') {
-        let qty = "Politicians: " + gameData.politician.qty
-        let lvl = " (Level " + gameData.politician.upgradeLevel + ")"
-        let inc = " - $" + format(gameData.politician.output * 60, 'money') + "/min each"
-        update('politicianQty', qty + lvl + inc)
-        update("buyPoliticianButton", "Buy Politician (Cost: $" + format(gameData.politician.cost, 'money') + ")")
-        update('politicianUpgrade', "Upgrade (Cost: " + format(gameData.politician.upgradePPCost, 'number') + " PP)")
+    // more generalizable pls
+    let capitalized = object.charAt(0).toUpperCase() + object.slice(1)
+    let qty = gameData[object].qty
+    let lvl = gameData[object].upgradeLevel
+    if (qty > 0) {
+        var inc = (generators[object].calcIncome(qty, lvl) / qty)  // per unit per second
+    } else {
+        var inc = 0
     }
-    
+    let cost = generators[object].getCost(qty)
+    let upgradeCost = generators[object].getUpgradeCost(lvl)
+    let qtyMessage = capitalized + "s: " + qty
+    let lvlMessage = " (Level " + lvl + ")"
+    let incMessage = " - $" + format(inc * 60, 'money') + "/min each"
+    if (qty > 0) {
+        update(object + 'Qty', qtyMessage + lvlMessage + incMessage)
+    } else {
+        update(object + 'Qty', qtyMessage)
+    }
+    update('buy' + capitalized + 'Button', 'Buy ' + capitalized + ' (Cost: $' + format(cost, 'money') + ')')
+    update(object + 'Upgrade', "Upgrade (Cost: $" + format(upgradeCost, 'money') + ")")
 }
 
 function updateMenuButtons() {
@@ -276,11 +289,23 @@ function specialProject001() {
     if (gameData.money > 2000) {
         gameData.money -= 2000
         gameData.specialProjects.sp001 = true
-        gameData.intern.cost *= 0.2
-        gameData.intern.upgradeCost *= 0.5
+        enableSpeicalProject("sp001")
         viewSpecialProjects()
         updateMoney()
         updateAssetInfo('intern')
+    }
+}
+
+function enableSpeicalProject(proj) {
+    switch(proj) {
+        case "sp001":
+            generators.intern.baseCost = 2.25
+            generators.intern.baseUpgradeCost = 50
+            break
+        case "sp002":
+            break
+        default: 
+            log("Unexpected special project key: " + proj)
     }
 }
 
@@ -340,78 +365,27 @@ function buyMoneyPerClickUpgrade() {
     }
 }
 
-// Interns
-
-function buyInterns() {
-    if (gameData.money >= gameData.intern.cost) {
-        gameData.money -= gameData.intern.cost
-        gameData.intern.qty += 1
-        gameData.intern.cost = 1.75 + (gameData.intern.cost * 1.4)
-        updateAssetInfo('intern')
+// let's make more generalized functions please
+function buyGenerator(gen) {
+    // usage: buyGenerator("intern") to attempt to buy an intern
+    genCost = generators[gen].getCost(gameData[gen].qty)
+    if (gameData.money >= genCost) {
+        gameData.money -= genCost
+        gameData[gen].qty += 1
+        updateAssetInfo(gen)
         updateMoney()
     }
 }
 
-function buyInternUpgrade() {
-    if (gameData.money >= gameData.intern.upgradeCost) {
-        gameData.money -= gameData.intern.upgradeCost
-        gameData.intern.upgradeLevel += 1
-        gameData.intern.output = 0.1 + (gameData.intern.output * 1.008)  // current rate of inflation
-        gameData.intern.upgradeCost = 50 + (gameData.intern.upgradeCost * 1.6)
-        updateAssetInfo('intern')
+function buyGeneratorUpgrade(gen) {
+    upgradeCost = generators[gen].getUpgradeCost(gameData[gen].upgradeLevel)
+    if (gameData.money >= upgradeCost) {
+        gameData.money -= upgradeCost
+        gameData[gen].upgradeLevel += 1
+        updateAssetInfo(gen)
         updateMoney()
     }
 }
-
-// function getCostOfMany() {}
-
-// Printers
-
-function buyPrinters() {
-    if (gameData.money >= gameData.printer.cost) {
-        gameData.money -= gameData.printer.cost
-        gameData.printer.qty += 1
-        gameData.printer.cost *= 1.4
-        updateAssetInfo('printer')
-        updateMoney()
-    }
-}
-
-function buyPrinterUpgrade() {
-    if (gameData.money >= gameData.printer.upgradeCost) {
-        gameData.money -= gameData.printer.upgradeCost
-        gameData.printer.upgradeLevel += 1
-        // gameData.printer.output = gameData.printer.upgradeLevel + Math.pow(1.12, gameData.printer.output)
-        gameData.printer.output *= 1.1355  // inflation in 1980
-        gameData.printer.upgradeCost = gameData.printer.upgradeCost * 1.6
-        updateAssetInfo('printer')
-        updateMoney()
-    }
-}
-
-// Politicians
-
-function buyPoliticians() {
-    if (gameData.money >= gameData.politician.cost) {
-        gameData.money -= gameData.politician.cost
-        gameData.politician.qty += 1
-        gameData.politician.cost *= 17.76
-        updateAssetInfo('politician')
-        updatePP()
-    }
-}
-
-function buyPoliticianUpgrade() {
-    if (gameData.politicalPower.amount >= gameData.politician.upgradePPCost) {
-        gameData.politicalPower.amount -= gameData.politician.upgradePPCost
-        gameData.politician.upgradeLevel += 1
-        gameData.politician.output *= 1.068  // current rate of inflation
-        gameData.politician.upgradePPCost = gameData.politician.upgradePPCost * 1.2
-        updateAssetInfo('politician')
-        updatePP()
-    }
-}
-
 
 //
 // Saving and Loading
@@ -434,8 +408,15 @@ if (savegame !== null) {  // if a save exists
     }
     // ignore properties in savegame that doen't exist in initialGameData
     ppSlider.value = gameData.politicalPower.slider  // visually update slider
-    updateEverything()
+
+    for (specialProject in gameData.specialProjects) {
+        if (gameData.specialProjects[specialProject]) {
+            // bug: these are not disabled on reset()
+            enableSpeicalProject(specialProject)
+        }
+    }
 }
+updateEverything()
 
 // Save gameData to local storage
 var saveGameLoop = window.setInterval(function() {
